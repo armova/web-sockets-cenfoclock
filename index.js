@@ -14,6 +14,11 @@ console.log("http server listening on %d", port)
 var wss = new WebSocketServer({server: server})
 console.log("websocket server created")
 
+wss.broadcast = function(data) {
+  for (var i in this.clients)
+    this.clients[i].send(data);
+};
+
 wss.on("connection", function(ws) {
   /*var id = setInterval(function() {
     ws.send(JSON.stringify("U r connected"), function() {  })
@@ -23,11 +28,12 @@ wss.on("connection", function(ws) {
 
   ws.on('message', function(message) {
     console.log('received:', message);
-    ws.send(JSON.stringify("Msg received at server"), function() {  })
+    //ws.send(JSON.stringify("Msg received at server"), function() {  });
+    wss.broadcast(JSON.stringify("Msg received at server"), function() {  });
   });
 
   ws.on("close", function() {
-    console.log("websocket connection close")
+    console.log("websocket connection close");
     //clearInterval(id)
   })
 
