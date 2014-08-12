@@ -27,10 +27,12 @@
       };
       
       ws.onmessage = function (event) {
-        console.log(event);
-        var li = document.createElement('li');
-        li.innerHTML = JSON.parse(event.data);
-        document.querySelector('#pings').appendChild(li);
+        if (JSON.parse(event.data) != ""){  
+          console.log(event);
+          var li = document.createElement('li');
+          li.innerHTML = JSON.parse(event.data);
+          document.querySelector('#pings').appendChild(li);
+        }
       };
       
     </script>
