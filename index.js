@@ -4,15 +4,21 @@ var express = require("express")
 var app = express()
 var port = process.env.PORT || 5000
 
-app.use(express.static(__dirname + "/"))
+var cors = require("cors");
 
-var server = http.createServer(app)
-server.listen(port)
+app.use(express.static(__dirname + "/"));
 
-console.log("http server listening on %d", port)
+app.use(cors());
+
+console.log("http server listening on %d", port);
 
 var wss = new WebSocketServer({server: server})
-console.log("websocket server created")
+console.log("websocket server created");
+
+app.get("/answer",function(req,res){
+wss.broadcast(JSON.stringify("Msg received at server"), function() { });
+res.send(200);
+})
 
 wss.broadcast = function(data) {
   for (var i in this.clients)
@@ -24,7 +30,7 @@ wss.on("connection", function(ws) {
     ws.send(JSON.stringify(""), function() {  })
   }, 10000)
 
-  console.log("websocket connection open")
+  console.log("websocket connection open");
 
   ws.on('message', function(message) {
     console.log('received:', message);
@@ -35,7 +41,10 @@ wss.on("connection", function(ws) {
   ws.on("close", function() {
     console.log("websocket connection close");
     clearInterval(id)
-  })
+  });
 
-})
+});
+
+var server = http.createServer(app)
+server.listen(port);
 
