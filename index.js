@@ -10,6 +10,9 @@ app.use(express.static(__dirname + "/"));
 
 app.use(cors());
 
+var server = http.createServer(app);
+server.listen(port);
+
 console.log("http server listening on %d", port);
 
 var wss = new WebSocketServer({server: server})
@@ -45,6 +48,5 @@ wss.on("connection", function(ws) {
 
 });
 
-var server = http.createServer(app)
-server.listen(port);
+
 
